@@ -1,0 +1,383 @@
+openapi: "3.0.1"
+
+info:
+  title: Swagger Nest.js Codegen Yaml Test File
+
+  contact:
+    email: ryan937@washswat.com
+
+  version: 1.0.0
+
+servers:
+  - description: "Local Server Test"
+    url: http://localhost:3000
+
+paths:
+  /health-check:
+    get:
+      tags:
+        - HealthCheck
+      summary: Health check server....
+      description: Health check API for that server
+
+      #board @Controller Method Name
+      operationId: healthCheck
+
+      responses:
+        "200":
+          description: Health Check Return Information
+
+          # x-codgen-request-body-name ResponseDTO Class Name
+          x-codegen-request-body-name: HealthCheckResponse
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/HealthCheck"
+
+  /board/list:
+    get:
+      tags:
+        - "Board"
+
+      summary: Bulletin Full Lookup
+      description: Bulletin Full Lookup API
+
+      #board @Controller Method Name
+      operationId: "updateBoardlistAll"
+
+      #Set client request parameters
+      #If you use the $ref reference method
+      parameters:
+        - $ref: "#/components/parameters/x-access-token"
+
+      responses:
+        "200":
+          description: "success info"
+
+          # x-codgen-request-body-name ResponseDTO Class Name
+          x-codegen-request-body-name: "BoardListResponse"
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - "data"
+                # x-codegen-request-body-name Class Properties
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/Board"
+
+  /board/list?id={id}&name={name}:
+    get:
+      tags:
+        - "Board"
+
+      summary: "Full view of a particular bulletin"
+      description: "Specific bulletin board data full lookup API"
+
+      #board @Controller Method Name
+      operationId: "updateBoardlist"
+
+      #Set client request parameters
+      #If you use the $ref reference method
+      parameters:
+        - $ref: "#/components/parameters/x-access-token"
+        - in: query
+          name: id
+          required: true
+          description: "board unique key"
+          schema:
+            type: number
+
+        - in: query
+          name: name
+          description: "board name"
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: "success info"
+
+          # x-codgen-request-body-name ResponseDTO Class Name
+          x-codegen-request-body-name: "BoardListResponse"
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - "data"
+                # x-codegen-request-body-name Class Properties
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/Board"
+
+  /board/create:
+    post:
+      tags:
+        - "Board"
+      summary: "create board"
+      description: "create board API"
+
+      #board @Controller Method Name
+      operationId: createBoard
+
+      parameters:
+        - $ref: "#/components/parameters/x-access-token"
+
+      requestBody:
+        #Request DTO Class Name
+        #If $ref is referenced immediately, the BoardCreate schema property referenced to the BoardCreateRequest class name is applied.
+        x-codegen-request-body-name: "BoardCreateRequest"
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/BoardCreate"
+
+      responses:
+        "200":
+          description: "success info"
+
+          # x-codegen-request-body-name ResponseDTO Class Name
+          x-codegen-request-body-name: "CreateBoardResponse"
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - "data"
+                # x-codegen-request-body-name Class Properties
+                properties:
+                  data:
+                    description: "borad unique key"
+                    type: number
+                    example: 1
+  /board/update:
+    put:
+      tags:
+        - "Board"
+      summary: "update board"
+      description: "update board API"
+
+      #board @Controller Method Name
+      operationId: "updateBoard"
+
+      parameters:
+        - in: header
+          name: "x-access-token"
+          schema:
+            type: string
+          required: true
+          description: "Access-Token"
+
+      requestBody:
+        description: "create board dto"
+        #x-codegen-request-body-name Request DTO Class Name
+        x-codegen-request-body-name: "UpdateBoardRequest"
+        #If $ref is not referenced, the UpdateBoardRequest class is created based on the information declared in properties.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "id"
+                - "name"
+                - "comment"
+              properties:
+                id:
+                  description: "borad unique key"
+                  type: number
+                  example: 1
+                name:
+                  description: "board name"
+                  type: string
+                  example: "ryan test board name"
+                comment:
+                  description: "board comment"
+                  type: object
+                  $ref: "#/components/schemas/Comment"
+
+      responses:
+        "200":
+          description: "success info"
+
+          # x-codegen-request-body-name ResponseDTO Class Name
+          x-codegen-request-body-name: "UpdateBoardResponse"
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - "data"
+                # x-codegen-request-body-name Class Properties
+                properties:
+                  data:
+                    description: "board unique key"
+                    type: number
+                    example: 1
+
+  /board/delete/{id}/{test}:
+    delete:
+      tags:
+        - "Board"
+
+      summary: "delete board"
+      description: "delete board API"
+
+      #board @Controller Method Name
+      operationId: "deleteBoard"
+
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "board unique key"
+          schema:
+            type: number
+        - in: path
+          name: test
+          required: true
+          description: "test data"
+          schema:
+            type: number
+
+      responses:
+        "200":
+          description: "Success Info"
+
+          # x-codegen-request-body-name ResponseDTO Class Name
+          x-codegen-request-body-name: "DeleteResponse"
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - "success"
+                # x-codegen-request-body-name Class Properties
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+components:
+  schemas:
+    HealthCheck:
+      type: object
+      required:
+        - "code"
+        - "success"
+      properties:
+        code:
+          description: "success code"
+          type: number
+          example: 200
+        success:
+          description: "success type"
+          type: boolean
+          example: true
+
+    #  In the properties attribute, a single object reference with a different data model reference method should be set to the object type
+    Board:
+      type: object
+      required:
+        - "id"
+        - "name"
+        - "eCommant"
+      properties:
+        id:
+          description: "board unique key"
+          type: number
+          example: 1
+        name:
+          description: "board name"
+          type: string
+          example: "Board Name"
+        eCommant:
+          description: "comment object"
+          type: object
+          $ref: "#/components/schemas/Comment"
+
+    # If it is an array type referring to another Data Model in properties properties
+    # Array type must be set to array and items must be declared
+    Board2:
+      type: object
+      required:
+        - "id"
+        - "name"
+        - "eCommant"
+      properties:
+        id:
+          description: "board unique key"
+          type: number
+          example: 1
+        name:
+          description: "board name"
+          type: string
+          example: "Board Name"
+        eCommant:
+          description: "comment object"
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
+    Comment:
+      type: object
+      required:
+        - "id"
+        - "content"
+      properties:
+        id:
+          description: "board unique key"
+          type: number
+          example: 1
+        content:
+          description: "comment content"
+          type: string
+          example: "Hello, nice to meet you"
+
+    BoardCreate:
+      description: "create board"
+      type: object
+      required:
+        - "id"
+        - "name"
+        - "oneCommant"
+        - "multiCommant"
+      properties:
+        id:
+          description: "board unique key"
+          type: number
+          example: 1
+        name:
+          description: "board name"
+          type: string
+          example: "Board Name"
+
+        # In the properties attribute, a single object reference with a different data model reference method should be set to the object type
+        oneCommant:
+          description: "one comment"
+          type: object
+          $ref: "#/components/schemas/Comment"
+
+        # If it is an array type referring to another Data Model in properties properties
+        # Array type must be set to array and items must be declared
+        multiCommant:
+          description: "multi commant"
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
+  #name If the value is not used as a variable name, use key as a variable name
+  parameters:
+    x-access-token:
+      in: header
+      name: "x-access-token"
+      schema:
+        type: string
+      description: Access-Token
+      required: true
